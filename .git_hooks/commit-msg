@@ -1,0 +1,46 @@
+#!/bin/bash
+echo
+echo -n "Commit message check...................................................."
+commit_message=$(cat $1)
+
+if [[ $commit_message =~ ^Merge.* ]]; then
+    echo -e "\e[48;2;13;188;121m\e[38;2;54;54;54mPassed\e[0m"
+    exit 0
+fi
+
+
+AVAILABLE_TYPES=("fix" "feat" "docs" "style" "refactor" "perf" "test" "chore" "revert" "build" "ci")
+MESSAGE_REGEX_PATTERN="^([a-z]*)(\((.*)\)): (.*)(\n\n(\X*))?$"
+
+# Check if commit message is in correct format
+if ! [[ $commit_message =~ $MESSAGE_REGEX_PATTERN ]]; then
+
+  echo -e "\e[41mFailed\e[0m"
+  echo "Commit message is not in correct format. Please follow the format: <type>(<scope>): <description>"
+  exit 1
+fi
+
+# Get commit message parts
+type=${BASH_REMATCH[1]}
+scope=${BASH_REMATCH[3]}
+description=${BASH_REMATCH[4]}
+body_and_footer=${BASH_REMATCH[6]}
+
+description_length=${#description}
+
+
+# Check if type is in defined list
+if ! echo "${AVAILABLE_TYPES[@]}" | grep -qw "$type"; then
+  echo -e "\e[41mFailed\e[0m"
+  echo "Type '$type' is not allowed. Please use one of the following types: fix | feat | docs | style | refactor | perf | test | chore | revert | build | ci"
+  exit 1
+fi
+
+# Check if has dot character at the end
+if [[ $description =~ \.$ ]]; then
+  echo -e "\e[41mFailed\e[0m"
+  echo "Commit message description must not end with dot character."
+  exit 1
+fi
+
+echo -e "\e[48;2;13;188;121m\e[38;2;54;54;54mPassed\e[0m"
