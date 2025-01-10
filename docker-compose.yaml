@@ -1,0 +1,36 @@
+version: "3.5"
+
+services:
+  postgres:
+    container_name: decashback-postgres
+    image: postgres:latest
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - decashback-network
+    environment:
+      - POSTGRES_DB=decashback
+      - POSTGRES_USER=decashback
+      - POSTGRES_PASSWORD=decashback
+    restart: unless-stopped
+
+  redis:
+    container_name: decashback-redis
+    image: redis:latest
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - decashback-network
+    restart: unless-stopped
+
+networks:
+  decashback-network:
+    driver: bridge
+
+volumes:
+  postgres:
+  redis:
