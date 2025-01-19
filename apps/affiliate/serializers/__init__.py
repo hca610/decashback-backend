@@ -1,0 +1,1 @@
+from .affiliate_create import AffiliateCreateSerializer
