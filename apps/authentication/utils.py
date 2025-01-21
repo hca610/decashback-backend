@@ -12,6 +12,7 @@ def jwt_payload_handler(user):
     payload = {
         "user_id": user.pk,
         "name": user.name,
+        "is_active": user.is_active,
     }
 
     return payload
@@ -56,7 +57,7 @@ class TokenAuthentication(BaseAuthentication):
                     "status": status.HTTP_401_UNAUTHORIZED,
                 }
             )
-        if not decoded_token["is_active"]:
+        if not decoded_token.get("is_active"):
             raise AuthenticationFailed(
                 {
                     "success": False,

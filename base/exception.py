@@ -66,3 +66,7 @@ def exception_handler(exc, context):
             capture_exception(e)
 
     return response
+
+
+class PlatformAPIError(Exception):
+    pass

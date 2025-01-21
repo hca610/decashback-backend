@@ -12,11 +12,10 @@ class SerializerContextMixin:
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
-        if hasattr(self.request.user, "id") and hasattr(self.request.user, "country"):
+        if hasattr(self.request.user, "id"):
             context.update(
                 {
                     "user_id": self.request.user.id,
-                    "country": self.request.user.country,
                 }
             )
         self.context = context
@@ -40,7 +39,7 @@ class BaseListAPIView(SerializerContextMixin, ListAPIView):
         query_params.update(
             {
                 "user_id": self.request.user.id,
-                "country": self.request.user.country,
+                # "country": self.request.user.country,
             }
         )
 
